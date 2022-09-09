@@ -1,0 +1,63 @@
+<html><head><!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v6.js"></script>
+  </head>
+  <body>
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+    
+    
+    
+   <script>
+     
+// set the dimensions and margins of the graph
+const margin = {top: 10, right: 20, bottom: 30, left: 50},
+    width = 500 - margin.left - margin.right,
+    height = 420 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+const svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//Read the data
+d3.csv("https://raw.githubusercontent.com/Fabio-ff/public-test-repo/master/test.csv").then( function(data) {
+
+  // Add X axis
+  const x = d3.scaleLinear()
+    .range([ "F1-NT","F1-D1","F1-D2","F1-D3"]);
+  svg.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x));
+
+  // Add Y axis
+  const y = d3.scaleLinear()
+    .range([ "F2-NT","F2-D1","F2-D2","F2-D3"]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+  // Add a scale for bubble size
+  const z = d3.scaleLinear().domain([0,1,2,3,4,5,6,7,8,9,10])
+    .range([ 0, 10]);
+
+  // Add dots
+  svg.append('g')
+    .selectAll("dot")
+    .data(data)
+    .join("circle")
+      .attr("cx", d => x(d.f1))
+      .attr("cy", d => y(d.f2))
+      .attr("r", d => z(d.pallozzo))
+      .style("fill", "#69b3a2")
+      .style("opacity", "0.7")
+      .attr("stroke", "black")
+
+})
+    </script>
+  </body>
+</html>
